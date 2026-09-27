@@ -1,4 +1,4 @@
-const interior = ['IMG_7109.webp','IMG_7117.webp','IMG_7105.webp','IMG_7104.webp','IMG_7114.webp','IMG_7119.webp'];
+const interior = ['IMG_7109.webp','IMG_7118.webp','IMG_7116.webp','IMG_7117.webp','IMG_7112.webp','IMG_7119.webp','IMG_7105.webp','IMG_7104.webp','IMG_7102.webp','IMG_7114.webp','IMG_7103.webp'];
 const chosen = ['DSC09363.webp','DSC09358.webp','DSC09362.webp','DSC09364.webp','DSC09368.webp','DSC09355.webp','DSC09370.webp'];
 const allPhotos = [...chosen, ...interior];
 const src = name => `/photos/${name}`;
@@ -15,3 +15,49 @@ document.querySelector('#app').innerHTML = `
 <section class="contact" id="kontakt"><span class="eyebrow">06 / KONTAKT</span><h2>Chcete auto vidět osobně?</h2><p>Napište mi pro další informace nebo domluvení prohlídky. Kontaktní údaj doplním před zveřejněním.</p><div class="contact-price">449 000 Kč</div></section></main><footer><span>ŠKODA KODIAQ · 2017</span><a href="#uvod">Zpět nahoru ↑</a></footer>
 <dialog id="lightbox"><button class="close" aria-label="Zavřít fotografii">×</button><button class="prev" aria-label="Předchozí fotografie">‹</button><img alt="Zvětšená fotografie vozu"><button class="next" aria-label="Další fotografie">›</button><span class="counter"></span></dialog>`;
 const dialog=document.querySelector('#lightbox');let active=0;function show(n){active=(n+allPhotos.length)%allPhotos.length;dialog.querySelector('img').src=src(allPhotos[active]);dialog.querySelector('.counter').textContent=`${active+1} / ${allPhotos.length}`};document.querySelectorAll('.tile').forEach((el,i)=>el.addEventListener('click',()=>{show(i);dialog.showModal()}));dialog.querySelector('.close').onclick=()=>dialog.close();dialog.querySelector('.prev').onclick=()=>show(active-1);dialog.querySelector('.next').onclick=()=>show(active+1);dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});document.addEventListener('keydown',e=>{if(!dialog.open)return;if(e.key==='ArrowLeft')show(active-1);if(e.key==='ArrowRight')show(active+1)});
+// Odstranění věty o parametrech úpravy.
+const tuningText = document.querySelector('#detaily > div > p');
+if (tuningText) {
+  tuningText.textContent = tuningText.textContent.replace(
+    ' Konkrétní parametry úpravy rád upřesním při prohlídce.',
+    ''
+  );
+}
+
+// Doplnění výbavy bez opakování již uvedených položek.
+const extraEquipment = [
+  [
+    'Bederní opěry předních sedadel',
+    'Funkce Off-road',
+    'Zatmavená zadní boční skla a zadní okno',
+    'Vnější zrcátka s pamětí, vyhříváním a automatickým stmíváním',
+    'Automaticky stmívatelné vnitřní zrcátko'
+  ],
+  [
+    'Parkovací pilot / automatické parkování',
+    'Prémiový audiosystém',
+    'AUX-IN a 2× USB',
+    'Světelný a dešťový senzor',
+    'Crew Protect Assist a rozpoznání únavy řidiče'
+  ],
+  [
+    'Dvojitá podlaha zavazadlového prostoru',
+    'Paket pro špatné cesty',
+    'Osvětlení prostoru pro nohy vpředu i vzadu',
+    'Sada nářadí a zvedák'
+  ]
+];
+
+document.querySelectorAll('#vybava .cards ul').forEach((list, index) => {
+  (extraEquipment[index] || []).forEach(text => {
+    if ([...list.children].some(item => item.textContent === text)) return;
+    const item = document.createElement('li');
+    item.textContent = text;
+    list.appendChild(item);
+  });
+});
+
+document.querySelectorAll('.interior-gallery .tile span').forEach((label, i) => {
+  label.textContent =
+    `${String(i + 1).padStart(2, '0')} / ${interior.length}`;
+});
